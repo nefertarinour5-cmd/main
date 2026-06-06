@@ -1,0 +1,33 @@
+name: Compilation Memory
+
+on:
+  workflow_dispatch: # Permet de lancer la compilation manuellement
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Recuperer le code source
+      uses: actions/checkout@v4
+
+    - name: Configurer Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Installer les dependances
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyinstaller gradio
+
+    - name: Compilation avec PyInstaller
+      run: |
+        pyinstaller --clean --collect-all gradio --onefile memory.py
+
+    - name: Televerser l'executable
+      uses: actions/upload-artifact@v4
+      with:
+        name: Memory-Windows
+        path: dist/memory.exe
+
